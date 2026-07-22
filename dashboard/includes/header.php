@@ -10,11 +10,22 @@ $user  = currentUser();
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title><?= e($pageTitle ?? 'OIT Management') ?> — OIT Dashboard</title>
+  <script>
+    (() => {
+      try {
+        const saved = localStorage.getItem('chop-theme');
+        const theme = (saved === 'light' || saved === 'dark')
+          ? saved
+          : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-bs-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/chop/chop-theme.css">
   <style>
-    .navbar-brand-image { height: 32px; }
     .expiry-warn  { background: #fff3cd !important; }
     .expiry-crit  { background: #f8d7da !important; }
   </style>
@@ -22,14 +33,29 @@ $user  = currentUser();
 <body class="antialiased">
 <div class="wrapper">
   <!-- Sidebar -->
-  <aside class="navbar navbar-vertical navbar-expand-lg" data-bs-theme="dark">
+  <aside class="navbar navbar-vertical navbar-expand-lg chop-sidebar">
     <div class="container-fluid">
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu">
         <span class="navbar-toggler-icon"></span>
       </button>
       <h1 class="navbar-brand navbar-brand-autodark">
-        <a href="patients.php" class="text-white text-decoration-none">
-          <i class="fa-solid fa-syringe me-2"></i>OIT System
+        <a href="patients.php" class="text-white text-decoration-none d-flex align-items-center gap-2">
+          <img
+            src="assets/chop/images/chop-logo-icon-light.png"
+            data-chop-logo
+            data-light-src="assets/chop/images/chop-logo-icon-light.png"
+            data-dark-src="assets/chop/images/chop-logo-icon-dark.png"
+            alt="CHOP Logo Icon"
+            class="chop-brand-icon"
+          >
+          <img
+            src="assets/chop/images/chop-logo-full-light.png"
+            data-chop-logo
+            data-light-src="assets/chop/images/chop-logo-full-light.png"
+            data-dark-src="assets/chop/images/chop-logo-full-dark.png"
+            alt="CHOP Logo"
+            class="chop-brand-full"
+          >
         </a>
       </h1>
       <div class="collapse navbar-collapse" id="sidebar-menu">
@@ -96,10 +122,16 @@ $user  = currentUser();
           </li>
         </ul>
         <div class="mt-auto pt-3 border-top border-secondary">
-          <div class="d-flex align-items-center px-3 py-2 text-white small">
+          <div class="px-3 pb-2">
+            <button type="button" class="btn btn-outline-light btn-sm w-100" id="chop-theme-toggle">
+              <i class="fa-solid fa-moon me-1" data-chop-theme-icon></i>
+              <span data-chop-theme-label>Dark mode</span>
+            </button>
+          </div>
+          <div class="d-flex align-items-center px-3 py-2 chop-user-panel small">
             <i class="fa-solid fa-user-circle me-2"></i>
             <span><?= e($user['username']) ?></span>
-            <span class="badge bg-azure ms-2"><?= e($user['role']) ?></span>
+            <span class="badge ms-2 chop-role-badge"><?= e($user['role']) ?></span>
             <a href="logout.php" class="ms-auto text-white-50" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></a>
           </div>
         </div>

@@ -39,25 +39,45 @@ $timeout = isset($_GET['timeout']);
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Login — OIT Management System</title>
+  <script>
+    (() => {
+      try {
+        const saved = localStorage.getItem('chop-theme');
+        const theme = (saved === 'light' || saved === 'dark')
+          ? saved
+          : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-bs-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-  <style>
-    body { background: #f0f4f8; }
-    .login-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-    .login-card { width: 100%; max-width: 420px; }
-  </style>
+  <link rel="stylesheet" href="assets/chop/chop-theme.css">
 </head>
-<body>
+<body class="chop-login-page">
 <div class="login-container p-3">
   <div class="login-card">
+    <div class="d-flex justify-content-end mb-3">
+      <button type="button" class="btn btn-outline-secondary btn-sm" id="chop-theme-toggle">
+        <i class="fa-solid fa-moon me-1" data-chop-theme-icon></i>
+        <span data-chop-theme-label>Dark mode</span>
+      </button>
+    </div>
     <div class="card shadow-lg border-0">
       <div class="card-body p-4 p-md-5">
         <div class="text-center mb-4">
           <div class="mb-3">
-            <span class="display-6 text-primary"><i class="fa-solid fa-syringe"></i></span>
+            <img
+              src="assets/chop/images/chop-logo-full-light.png"
+              data-chop-logo
+              data-light-src="assets/chop/images/chop-logo-full-light.png"
+              data-dark-src="assets/chop/images/chop-logo-full-dark.png"
+              alt="CHOP Logo"
+              class="chop-login-logo"
+            >
           </div>
-          <h1 class="h3 mb-1">OIT Management System</h1>
+          <h1 class="h3 mb-1">CHOP OIT Management</h1>
           <p class="text-muted small">Pediatric Oral Immunotherapy Platform</p>
         </div>
         <?php if ($timeout): ?>
@@ -92,6 +112,7 @@ $timeout = isset($_GET['timeout']);
     </div>
   </div>
 </div>
+<script src="assets/chop/chop-theme.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script>
 </body>
 </html>

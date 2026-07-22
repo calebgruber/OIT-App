@@ -1,0 +1,88 @@
+:root {
+  --chop-cyan: #41b6e5;
+  --chop-olive: #5E7F24;
+  --chop-magenta: #d01c65;
+  --chop-navy: #005587;
+  --chop-blue: #0274b5;
+  --chop-white: #ffffff;
+
+  --tblr-primary: var(--chop-blue);
+  --tblr-primary-rgb: 2, 116, 181;
+  --tblr-link-color: var(--chop-navy);
+  --tblr-link-color-rgb: 0, 85, 135;
+}
+
+[data-bs-theme='light'] {
+  --tblr-body-bg: #f4f9fc;
+  --tblr-body-color: #1e3140;
+}
+
+[data-bs-theme='dark'] {
+  --tblr-body-bg: #0f1c28;
+  --tblr-body-color: #ebf7fd;
+}
+
+.btn-primary {
+  --tblr-btn-bg: var(--chop-blue);
+  --tblr-btn-border-color: var(--chop-blue);
+  --tblr-btn-hover-bg: var(--chop-navy);
+  --tblr-btn-hover-border-color: var(--chop-navy);
+}
+
+.chop-sidebar {
+  background: linear-gradient(180deg, var(--chop-navy) 0%, var(--chop-blue) 65%, var(--chop-cyan) 100%);
+}
+
+[data-bs-theme='dark'] .chop-sidebar {
+  background: linear-gradient(180deg, #003b5e 0%, var(--chop-navy) 50%, var(--chop-blue) 100%);
+}
+
+.chop-sidebar .nav-link,
+.chop-sidebar .navbar-brand,
+.chop-sidebar .navbar-toggler,
+.chop-user-panel {
+  color: var(--chop-white) !important;
+}
+
+.chop-sidebar .nav-link.active {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.chop-sidebar .nav-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.chop-brand-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.chop-brand-full {
+  height: 30px;
+  width: auto;
+  object-fit: contain;
+}
+
+.chop-role-badge {
+  background-color: var(--chop-olive);
+  color: var(--chop-white);
+}
+
+.chop-login-page .login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chop-login-page .login-card {
+  width: 100%;
+  max-width: 420px;
+}
+
+.chop-login-logo {
+  height: 52px;
+  width: auto;
+  object-fit: contain;
+}
