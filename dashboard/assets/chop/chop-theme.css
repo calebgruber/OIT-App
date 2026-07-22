@@ -30,11 +30,11 @@
 }
 
 .chop-sidebar {
-  background: linear-gradient(180deg, var(--chop-navy) 0%, var(--chop-blue) 65%, var(--chop-cyan) 100%);
+  background: linear-gradient(180deg, var(--chop-magenta) 0%, var(--chop-navy) 55%, var(--chop-blue) 100%);
 }
 
 [data-bs-theme='dark'] .chop-sidebar {
-  background: linear-gradient(180deg, #003b5e 0%, var(--chop-navy) 50%, var(--chop-blue) 100%);
+  background: linear-gradient(180deg, #7d0f40 0%, #003b5e 50%, var(--chop-navy) 100%);
 }
 
 .chop-sidebar .nav-link,
