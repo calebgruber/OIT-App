@@ -30,6 +30,9 @@ build/
 # macOS
 .DS_Store
 
+# Dashboard DB config (contains credentials — never commit)
+dashboard/config/db.php
+
 # Logs
 logs/
 *.log
