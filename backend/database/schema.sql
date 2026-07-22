@@ -132,15 +132,41 @@ CREATE TABLE syringes (
   CONSTRAINT fk_syringes_patient FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE,
   CONSTRAINT fk_syringes_carton FOREIGN KEY (carton_id) REFERENCES cartons(id) ON DELETE SET NULL,
   CONSTRAINT fk_syringes_powder FOREIGN KEY (powder_supply_id) REFERENCES powder_supplies(id) ON DELETE SET NULL,
-  CONSTRAINT chk_syringes_source CHECK (
-    (carton_id IS NOT NULL AND powder_supply_id IS NULL AND dose_form = 'milk')
-    OR (carton_id IS NULL AND powder_supply_id IS NOT NULL AND dose_form = 'powder')
-  ),
   UNIQUE KEY uq_syringes_barcode (barcode),
   KEY idx_syringes_patient_status (patient_id, status),
   KEY idx_syringes_expiry (final_expiry),
   KEY idx_syringes_scheduled_date (scheduled_dose_date)
 ) ENGINE=InnoDB;
+
+DELIMITER $$
+
+CREATE TRIGGER trg_syringes_validate_source_before_insert
+BEFORE INSERT ON syringes
+FOR EACH ROW
+BEGIN
+  IF NOT (
+    (NEW.carton_id IS NOT NULL AND NEW.powder_supply_id IS NULL AND NEW.dose_form = 'milk')
+    OR (NEW.carton_id IS NULL AND NEW.powder_supply_id IS NOT NULL AND NEW.dose_form = 'powder')
+  ) THEN
+    SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'Syringes must reference a carton for milk doses or a powder supply for powder doses';
+  END IF;
+END$$
+
+CREATE TRIGGER trg_syringes_validate_source_before_update
+BEFORE UPDATE ON syringes
+FOR EACH ROW
+BEGIN
+  IF NOT (
+    (NEW.carton_id IS NOT NULL AND NEW.powder_supply_id IS NULL AND NEW.dose_form = 'milk')
+    OR (NEW.carton_id IS NULL AND NEW.powder_supply_id IS NOT NULL AND NEW.dose_form = 'powder')
+  ) THEN
+    SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'Syringes must reference a carton for milk doses or a powder supply for powder doses';
+  END IF;
+END$$
+
+DELIMITER ;
 
 CREATE TABLE mar_entries (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
