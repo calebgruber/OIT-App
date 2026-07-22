@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tv_symptom_patient"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/active_patient"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_severity_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/severity"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_symptom_patient" />
+
+        <SeekBar
+            android:id="@+id/seek_severity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:max="4"
+            android:progress="0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_severity_value" />
+
+        <LinearLayout
+            android:id="@+id/layout_symptoms"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/seek_severity">
+
+            <CheckBox android:id="@+id/cb_hives" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/hives" />
+            <CheckBox android:id="@+id/cb_swelling" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/swelling" />
+            <CheckBox android:id="@+id/cb_itching" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/itching" />
+            <CheckBox android:id="@+id/cb_vomiting" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/vomiting" />
+            <CheckBox android:id="@+id/cb_cough" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/cough" />
+            <CheckBox android:id="@+id/cb_wheeze" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/wheeze" />
+            <CheckBox android:id="@+id/cb_other" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/other" />
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_symptom_notes"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="@string/notes"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_symptoms">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_symptom_notes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:minLines="3" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_submit_symptom"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/submit"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/til_symptom_notes" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

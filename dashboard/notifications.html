@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+      <title>Notifications · OIT Management</title>
+    </head>
+    <body>
+      <div id="app-shell"></div>
+      <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+      <script>
+      document.addEventListener('DOMContentLoaded', async () => {
+        if (!checkAuth()) return;
+
+OITApp.renderLayout({
+  title: 'Notifications',
+  subtitle: 'Operational alerts across dosing, inventory, and follow-up.',
+  activeNav: 'notifications',
+  content: `
+    <div id="page-note"></div>
+    <div class="card mb-3"><div class="card-body"><div class="row g-3 align-items-end"><div class="col-md-4"><label class="form-label">Patient</label><select class="form-select" id="patient-filter">${OITApp.patientOptions('')}</select></div><div class="col-md-3"><label class="form-label">Type</label><select class="form-select" id="type-filter"><option value="">All types</option><option value="updose">Updose</option><option value="expiry">Expiry</option><option value="inventory">Inventory</option></select></div><div class="col-md-3"><label class="form-label">Read state</label><select class="form-select" id="read-filter"><option value="">All</option><option value="unread">Unread</option><option value="read">Read</option></select></div></div></div></div>
+    <div id="notifications-list" class="list-group"></div>`
+});
+
+const render = async () => {
+  const patientId = document.getElementById('patient-filter').value;
+  const type = document.getElementById('type-filter').value;
+  const readFilter = document.getElementById('read-filter').value;
+  const result = await OITApp.resolveData(
+    () => api.getNotifications(patientId, readFilter === 'unread' ? true : ''),
+    () => OITApp.demoData.notifications.filter(item => !patientId || item.patientId === patientId)
+  );
+  let items = OITApp.asArray(result.data).filter(item => (!type || item.type === type));
+  if (readFilter === 'unread') items = items.filter(item => !item.read);
+  if (readFilter === 'read') items = items.filter(item => item.read);
+  document.getElementById('page-note').innerHTML = OITApp.renderDataSourceNote(result);
+  document.getElementById('notifications-list').innerHTML = items.map(item => `
+    <div class="list-group-item ${item.read ? '' : 'unread'}">
+      <div class="d-flex justify-content-between gap-3 flex-wrap">
+        <div>
+          <div class="d-flex align-items-center gap-2 mb-1">${OITApp.priorityBadge(item.priority)}<span class="badge bg-blue-lt text-blue text-uppercase">${OITApp.escapeHtml(item.type)}</span></div>
+          <div class="fw-semibold">${OITApp.escapeHtml(item.message)}</div>
+          <div class="text-secondary small mt-1">${OITApp.escapeHtml(OITApp.getPatientName(item.patientId))} • ${OITApp.formatDateTime(item.created_at)}</div>
+        </div>
+        <div>
+          ${item.read ? '<span class="badge bg-green-lt text-green">Read</span>' : `<button class="btn btn-outline-primary btn-sm mark-read" data-id="${item.id}">Mark as read</button>`}
+        </div>
+      </div>
+    </div>`).join('') || OITApp.renderEmptyState('No notifications matched your filters.', 'fa-bell');
+  document.querySelectorAll('.mark-read').forEach(button => button.addEventListener('click', async () => {
+    try {
+      if (result.demo) {
+        const note = OITApp.demoData.notifications.find(item => item.id === button.dataset.id);
+        if (note) note.read = true;
+      } else {
+        await api.markNotificationRead(button.dataset.id);
+      }
+      await render();
+    } catch (error) {
+      alert(error.message || 'Unable to mark notification as read.');
+    }
+  }));
+};
+['patient-filter', 'type-filter', 'read-filter'].forEach(id => document.getElementById(id).addEventListener('change', render));
+await render();
+
+      });
+      </script>
+    </body>
+    </html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+      <title>Food Logs · OIT Management</title>
+    </head>
+    <body>
+      <div id="app-shell"></div>
+      <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+      <script>
+      document.addEventListener('DOMContentLoaded', async () => {
+        if (!checkAuth()) return;
+
+const initialPatient = OITApp.parseQuery().get('patient') || '';
+OITApp.renderLayout({
+  title: 'Food logs',
+  subtitle: 'Meal co-ingestion and tolerance documentation.',
+  activeNav: 'food-logs',
+  content: `
+    <div id="page-note"></div>
+    <div class="card mb-3"><div class="card-body"><div class="row g-3 align-items-end"><div class="col-md-4"><label class="form-label">Patient</label><select class="form-select" id="patient-filter">${OITApp.patientOptions(initialPatient)}</select></div><div class="col-md-4"><label class="form-label">Date</label><input type="date" class="form-control" id="date-filter"></div></div></div></div>
+    <div class="card"><div class="table-responsive"><table class="table table-vcenter card-table"><thead><tr><th>Date / Time</th><th>Patient</th><th>Meal</th><th>Tolerated</th><th>Notes</th><th>Created</th></tr></thead><tbody id="food-body"></tbody></table></div></div>`
+});
+const render = async () => {
+  const patientId = document.getElementById('patient-filter').value;
+  const date = document.getElementById('date-filter').value;
+  const result = await OITApp.resolveData(
+    () => api.getFoodLogs(patientId, date),
+    () => OITApp.demoData.foodLogs.filter(item => (!patientId || item.patientId === patientId) && (!date || item.date_time.slice(0, 10) === date))
+  );
+  const items = OITApp.asArray(result.data);
+  document.getElementById('page-note').innerHTML = OITApp.renderDataSourceNote(result);
+  document.getElementById('food-body').innerHTML = items.map(item => `
+    <tr>
+      <td>${OITApp.formatDateTime(item.date_time)}</td>
+      <td>${OITApp.escapeHtml(OITApp.getPatientName(item.patientId))}</td>
+      <td>${OITApp.escapeHtml(item.meal)}</td>
+      <td>${OITApp.badge(item.tolerated)}</td>
+      <td>${OITApp.escapeHtml(item.notes)}</td>
+      <td>${OITApp.formatDateTime(item.created_at)}</td>
+    </tr>`).join('') || '<tr><td colspan="6" class="text-center text-secondary py-4">No food logs recorded for the selected criteria.</td></tr>';
+};
+['patient-filter', 'date-filter'].forEach(id => document.getElementById(id).addEventListener('change', render));
+await render();
+
+      });
+      </script>
+    </body>
+    </html>
